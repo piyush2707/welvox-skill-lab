@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Welvox Skill Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#F5EFE3;--card:#FBF7EE;--brown:#5A3A24;--soft:#8A6A52;--black:#1A1410;--line:#E4D9C6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--black);font-family:Inter,system-ui,sans-serif;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px}
+header{padding:20px 0;display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:600;color:var(--brown)}
+.hero{text-align:center;padding:48px 0 28px}
+h1{font-family:Fraunces,Georgia,serif;font-weight:500;font-size:clamp(34px,8vw,60px);line-height:1.1;margin:0 0 14px;color:var(--brown)}
+h1 em{font-style:italic}
+.sub{color:var(--soft);max-width:520px;margin:0 auto 22px}
+input{width:100%;max-width:460px;padding:14px 18px;border:1px solid var(--line);border-radius:999px;background:var(--card);font:inherit}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:18px 0}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--brown);padding:8px 16px;border-radius:999px;cursor:pointer;white-space:nowrap;font:inherit}
+.chip.on{background:var(--black);color:var(--cream);border-color:var(--black)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;padding-bottom:40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
+.card h3{margin:0 0 6px;font-size:17px;color:var(--brown)}
+.card p{margin:0 0 12px;color:var(--soft);font-size:14px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tag{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--brown)}
+.tag.checked{background:var(--black);color:var(--cream);border-color:var(--black)}
+.tag.warn{color:#8a2d1d;border-color:#d9b2a8}
+a.go{color:var(--black);font-weight:600;font-size:14px;text-decoration:none}
+.empty{color:var(--soft);padding:30px 0}
+footer{padding:30px 0;color:var(--soft);font-size:13px;text-align:center;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><span class="logo">Welvox Skill Lab</span><a class="go" href="https://welvox.in">welvox.in</a></header>
+<section class="hero">
+<h1>Free AI skills, <em>checked</em> before you install</h1>
+<p class="sub">A growing library of free agent skills. Every entry links to its original source and license.</p>
+<input id="q" type="search" placeholder="Search skills">
+</section>
+<div class="chips" id="chips"></div>
+<div class="grid" id="grid"></div>
+<footer>Listed skills keep their original licenses. Always review a skill before installing it.</footer>
+</div>
+<script>
+let skills=[],cat="All";
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x)e.textContent=x;return e}
+function render(){
+ const q=document.getElementById("q").value.toLowerCase();
+ const grid=document.getElementById("grid");grid.textContent="";
+ const list=skills.filter(s=>(cat==="All"||s.category===cat)&&(s.name+" "+s.summary).toLowerCase().includes(q));
+ if(!list.length){grid.appendChild(el("p","empty","No skills found."));return}
+ list.forEach(s=>{
+  const c=el("div","card");
+  c.appendChild(el("h3",null,s.name));
+  c.appendChild(el("p",null,s.summary));
+  const t=el("div","tags");
+  if(s.tier==="checked")t.appendChild(el("span","tag checked","Checked"+(s.score?" "+s.score+"/100":"")));
+  t.appendChild(el("span","tag",s.license));
+  t.appendChild(el("span","tag",s.category));
+  if(s.needs_computer)t.appendChild(el("span","tag warn","Needs a computer"));
+  c.appendChild(t);
+  const a=el("a","go","View source");a.href=s.source_url;a.target="_blank";a.rel="noopener";
+  c.appendChild(a);grid.appendChild(c);
+ });
+}
+function chips(){
+ const box=document.getElementById("chips");box.textContent="";
+ ["All",...new Set(skills.map(s=>s.category))].forEach(n=>{
+  const b=el("button","chip"+(n===cat?" on":""),n);
+  b.onclick=()=>{cat=n;chips();render()};box.appendChild(b);
+ });
+}
+fetch("data/skills.json").then(r=>r.json()).then(d=>{skills=d.skills;chips();render()})
+ .catch(()=>{document.getElementById("grid").appendChild(el("p","empty","Could not load skills."))});
+document.getElementById("q").addEventListener("input",render);
+</script>
+</body>
+</html>

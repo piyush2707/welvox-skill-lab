@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "skills": [
+    {
+      "id": "skill-creator",
+      "name": "skill-creator",
+      "category": "Dev",
+      "summary": "Guides you through building a new skill with interactive Q&A.",
+      "source_url": "https://github.com/anthropics/skills",
+      "license": "Apache-2.0",
+      "license_verified": true,
+      "agents": ["claude"],
+      "needs_computer": false,
+      "tier": "listed",
+      "score": null,
+      "last_checked": "2026-11-18"
+    },
+    {
+      "id": "video-editing",
+      "name": "video-editing",
+      "category": "Creative",
+      "summary": "AI-assisted editing of real footage using FFmpeg and Remotion.",
+      "source_url": "https://github.com/affaan-m/ecc",
+      "license": "MIT",
+      "license_verified": true,
+      "agents": ["claude-code"],
+      "needs_computer": true,
+      "tier": "listed",
+      "score": null,
+      "last_checked": "2026-11-18"
+    },
+    {
+      "id": "browser-use",
+      "name": "browser-use",
+      "category": "Automation",
+      "summary": "Lets an agent drive a real browser through Playwright.",
+      "source_url": "https://github.com/browser-use/browser-use",
+      "license": "MIT",
+      "license_verified": true,
+      "agents": ["claude-code"],
+      "needs_computer": true,
+      "tier": "listed",
+      "score": null,
+      "last_checked": "2026-11-18"
+    }
+  ]
+}
